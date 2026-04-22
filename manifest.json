@@ -1,0 +1,25 @@
+{
+  "name": "Freedom Countdown ⛏️",
+  "short_name": "Freedom!",
+  "description": "Counting down to the best day of your career life.",
+  "start_url": "/freedom-countdown/",
+  "scope": "/freedom-countdown/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/freedom-countdown/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/freedom-countdown/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
