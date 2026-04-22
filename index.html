@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Freedom Countdown ⛏️🎉</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#1a0533"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Freedom!"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#FFD700;--pink:#FF6B9D;--cyan:#00F5FF;--purple:#BF5FFF;--green:#39FF14;--orange:#FF6B6B}
+body{min-height:100vh;background:#0a0015;font-family:sans-serif;overflow-x:hidden}
+.neon-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.neon-orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbPulse var(--dur,5s) ease-in-out infinite alternate}
+@keyframes orbPulse{from{opacity:.2;transform:scale(.88)}to{opacity:.62;transform:scale(1.18)}}
+.light-beam{position:fixed;top:0;left:-50%;width:35%;height:100%;background:linear-gradient(90deg,transparent,rgba(191,95,255,.06),transparent);animation:beamSweep 7s linear infinite;pointer-events:none;z-index:0}
+@keyframes beamSweep{from{left:-50%}to{left:130%}}
+.glow-line{position:fixed;bottom:0;left:0;right:0;height:2px;pointer-events:none;z-index:0;animation:lineFlicker 2.5s ease-in-out infinite alternate}
+@keyframes lineFlicker{from{opacity:.4}to{opacity:1;box-shadow:0 0 24px 4px var(--cyan)}}
+.piece{position:fixed;top:-20px;pointer-events:none;z-index:0;animation:cffall linear infinite}
+@keyframes cffall{from{transform:translateY(-20px) rotate(0deg);opacity:1}to{transform:translateY(110vh) rotate(720deg);opacity:.15}}
+@keyframes neonBorder{from{box-shadow:0 0 6px var(--c),0 0 18px rgba(0,0,0,0),inset 0 0 6px rgba(0,0,0,0)}to{box-shadow:0 0 18px var(--c),0 0 50px var(--c),inset 0 0 14px var(--c)}}
+.app{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:44px 18px 90px}
+.header{text-align:center;margin-bottom:40px}
+.header-emoji{font-size:50px;animation:bounce 2.2s ease-in-out infinite;display:block}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+h1{font-family:'Righteous',cursive;font-size:clamp(26px,7vw,52px);color:var(--gold);margin:10px 0 0;letter-spacing:2px;animation:titleGlow 3s ease-in-out infinite alternate}
+@keyframes titleGlow{from{text-shadow:0 0 18px var(--gold),0 0 36px rgba(255,107,157,.4),0 2px 6px #000}to{text-shadow:0 0 40px var(--gold),0 0 80px var(--pink),0 0 120px rgba(191,95,255,.4),0 2px 6px #000}}
+.subtitle{color:rgba(255,255,255,.45);font-size:12px;margin-top:10px;letter-spacing:3px;text-transform:uppercase}
+.install-bar{text-align:center;margin-bottom:30px}
+.btn-install{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;border:none;border-radius:50px;padding:11px 26px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;animation:installGlow 2s ease-in-out infinite alternate}
+@keyframes installGlow{from{box-shadow:0 0 16px rgba(191,95,255,.6)}to{box-shadow:0 0 36px var(--purple),0 0 60px rgba(255,107,157,.7)}}
+.btn-notif{background:linear-gradient(135deg,#00c8cc,#00ff88);color:#000;border:none;border-radius:50px;padding:11px 26px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-left:8px;box-shadow:0 0 16px rgba(0,245,255,.4)}
+.btn-notif:disabled{opacity:.45;cursor:default;box-shadow:none}
+.notif-status{font-size:12px;margin-top:8px;min-height:18px;color:rgba(255,255,255,.4)}
+.notif-status.ok{color:var(--green)}
+.notif-status.err{color:var(--orange)}
+.countdown-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:32px}
+.time-box{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.06);backdrop-filter:blur(14px);border-radius:16px;padding:15px 18px;min-width:72px;border:2px solid rgba(255,255,255,.12);--c:var(--cyan);animation:neonBorder 2.5s ease-in-out infinite alternate}
+.time-box:nth-child(2){--c:var(--pink);animation-delay:.5s}
+.time-box:nth-child(3){--c:var(--purple);animation-delay:1s}
+.time-box:nth-child(4){--c:var(--green);animation-delay:1.5s}
+.time-val{font-family:'Righteous',cursive;font-size:46px;color:#fff;line-height:1}
+.time-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:2px;margin-top:5px}
+.progress-wrap{margin-bottom:36px}
+.prog-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.prog-labels .pct{color:var(--gold)}
+.prog-track{height:10px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--gold));box-shadow:0 0 14px var(--pink);animation:fillBright 2s ease-in-out infinite alternate;transition:width 1s ease}
+@keyframes fillBright{from{filter:brightness(1)}to{filter:brightness(1.5)}}
+.cards{display:flex;flex-direction:column;gap:14px}
+.card{border-radius:20px;padding:20px 22px;background:rgba(255,255,255,.04);backdrop-filter:blur(14px);border:2px solid var(--c);animation:neonBorder 3.5s ease-in-out infinite alternate;transition:transform .2s;--c:rgba(255,255,255,.15)}
+.card:hover{transform:translateY(-3px)}
+.card-icon{font-size:24px;margin-bottom:7px}
+.card-title{font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--c);font-weight:700;margin-bottom:9px}
+.card-body{font-family:'Lora',Georgia,serif;font-size:15px;color:rgba(255,255,255,.9);line-height:1.7}
+.song-title{font-size:17px;font-weight:700;color:var(--c);display:block;margin-bottom:2px}
+.song-artist{font-size:13px;opacity:.7;display:block;margin-bottom:8px;font-style:italic}
+.song-reason{font-size:14px;opacity:.85;line-height:1.6}
+.legend-career{display:block;font-size:10px;text-transform:uppercase;letter-spacing:2px;opacity:.6;margin-bottom:6px;font-style:normal;font-family:sans-serif}
+.legend-name{font-size:18px;font-weight:700;color:var(--c);display:block;margin-bottom:8px;font-family:'Righteous',cursive}
+.legend-story{font-size:14px;line-height:1.7;opacity:.9}
+.freedom{text-align:center;padding:50px 0}
+.freedom h2{font-family:'Righteous',cursive;font-size:44px;color:var(--gold);animation:rainbow 2s linear infinite}
+@keyframes rainbow{0%{color:#ff0000}16%{color:#ff8800}33%{color:#ffff00}50%{color:#00ff00}66%{color:#0088ff}83%{color:#8800ff}100%{color:#ff0000}}
+.freedom p{color:#fff;font-size:18px;margin-top:16px;line-height:1.8}
+.err-box{color:var(--orange);padding:20px;background:rgba(255,107,107,.08);border-radius:14px;border:1px solid rgba(255,107,107,.3);text-align:center}
+.footer{text-align:center;margin-top:52px;color:rgba(255,255,255,.2);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="neon-bg" id="neonBg"></div>
+<div class="light-beam"></div>
+<div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--cyan),transparent)"></div>
+<div id="confetti"></div>
+
+<div class="app">
+  <div class="header">
+    <span class="header-emoji">⛏️ 🎉 ⛏️</span>
+    <h1>FREEDOM COUNTDOWN</h1>
+    <p class="subtitle">Last Day: May 8, 2026 · 5:00 PM</p>
+  </div>
+
+  <div class="install-bar" id="installBar" style="display:none">
+    <button class="btn-install" id="btnInstall">📲 Add to Home Screen</button>
+    <button class="btn-notif"   id="btnNotif">🔔 Daily Reminders</button>
+    <div class="notif-status"   id="notifStatus"></div>
+  </div>
+
+  <div id="countdownSection">
+    <div class="countdown-row" id="countdownRow"></div>
+    <div class="progress-wrap"  id="progressWrap"></div>
+  </div>
+
+  <div class="freedom" id="freedomScreen" style="display:none">
+    <div style="font-size:80px;animation:bounce 1s ease-in-out infinite">🎊🥳🎊</div>
+    <h2>YOU'RE FREE!!!</h2>
+    <p>Dust yourself off and go live your best life, legend.<br>The mine had your time.<br><strong style="color:var(--gold)">The future has YOU.</strong> 💎</p>
+  </div>
+
+  <div class="cards" id="cardsEl"></div>
+
+  <div class="footer">
+    <div style="font-size:22px;margin-bottom:6px">💎</div>
+    The only gold worth mining is your future
+  </div>
+</div>
+
+<script>
+const DAILY_CONTENT = {
+  "2026-4-22": {
+    oneliner: "16 days left — you've survived tectonic shifts, toxic bosses, and underground politics. The surface is right there.",
+    song: { title: "Highway to Hell", artist: "AC/DC", reason: "Because you've been living it underground for years — time to drive off that highway and park somewhere sunny." },
+    affirmation: "Sixteen days sounds like a lot until you realise you've already survived every single day that came before it. You didn't just endure this place — you mastered it, mapped it, and now you're walking away on your own terms. That takes a rare kind of backbone.",
+    legend: { name: "Vera Wang", former: "Figure skater & fashion editor", became: "World-famous bridal designer", story: "Vera Wang failed to make the US Olympic figure skating team, then spent years as an editor at Vogue. At 40 years old she designed her own wedding dress because she couldn't find one she liked — and built a global fashion empire from that single act of self-belief. She didn't start her design career until most people think careers are winding down." },
+    rockclock: "A geologist walks into a bar. The bartender asks what they want. They say: 'something on the rocks — but not the job.'"
+  },
+  "2026-4-23": {
+    oneliner: "15 days left — even diamonds need pressure to form, but you've been under enough of it. Time to shine on your own terms.",
+    song: { title: "Take This Job and Shove It", artist: "Johnny Paycheck", reason: "A country classic that says everything you've been thinking but professionally couldn't. Consider this your anthem for the commute home tonight." },
+    affirmation: "You have spent years being the most knowledgeable person in rooms that didn't appreciate it. That expertise doesn't disappear when you walk out — it walks out WITH you, fully intact, ready to be poured into something that actually deserves it. The best chapters of your geological career haven't been written yet.",
+    legend: { name: "Colonel Harland Sanders", former: "Failed at 12 businesses before 60", became: "Founder of KFC, global icon", story: "At 62 years old, Colonel Sanders was broke, living off his Social Security check, sleeping in his car trying to franchise a chicken recipe. He was rejected over 1,000 times. By the time he sold KFC he was worth millions. His entire second act began after most people have already retired." },
+    rockclock: "Sedimentary, my dear Watson. The layers of nonsense at that job are finally about to be left behind."
+  },
+  "2026-4-24": {
+    oneliner: "14 days — two weeks. You could survive two weeks on a desert island. This is easier. The catering is better.",
+    song: { title: "Closing Time", artist: "Semisonic", reason: "Every new beginning comes from some other beginning's end — and this beginning is going to be spectacular." },
+    affirmation: "There is a version of you that exists on the other side of May 8th who wakes up without dread. Who has Sunday evenings back. Who remembers what it feels like to be energised by work instead of hollowed out by it. You are 14 days away from meeting that person. They've been waiting patiently.",
+    legend: { name: "Julia Child", former: "Government spy & advertising copywriter", became: "Pioneer of French cooking on American TV", story: "Julia Child worked for the OSS during WWII and spent her 30s drifting through various jobs. She didn't publish her landmark cookbook until she was 49, and didn't launch her iconic TV show until 51. She became America's most beloved culinary figure entirely in the second half of her life." },
+    rockclock: "14 days left in the quarry. The blast radius of your exit is going to be beautiful."
+  },
+  "2026-4-25": {
+    oneliner: "13 days — unlucky for some, but not for a geologist who finally found the richest vein: their own freedom.",
+    song: { title: "9 to 5", artist: "Dolly Parton", reason: "Dolly wrote this about workplace exploitation in 1980 and it's somehow still painfully relevant — pour yourself a coffee and let it validate every feeling you've had in a meeting." },
+    affirmation: "A geology superintendent understands better than almost anyone that the most valuable things are forged under the most brutal conditions. You have been forged. The pressure, the toxicity, the long haul — it was all compression. What's coming out the other side is something far more valuable than gold. It's you, unencumbered.",
+    legend: { name: "Stan Lee", former: "Struggling comic book office assistant", became: "Creator of the entire Marvel Universe", story: "Stan Lee spent nearly 20 years writing comics he felt were mediocre, stuck in a job he almost quit multiple times. His wife told him to write something he'd actually be proud of before walking away. That act of creative liberation at age 38 produced Spider-Man, the X-Men, Iron Man, Thor, and the entire Marvel universe." },
+    rockclock: "They say fool's gold is worthless — but you knew all along. The real gold was the exit strategy."
+  },
+  "2026-4-26": {
+    oneliner: "12 days left — the faults in that workplace were never geological. You mapped them all and none of them were yours.",
+    song: { title: "Don't Stop Me Now", artist: "Queen", reason: "Freddie Mercury wrote this from a place of pure unstoppable joy — bottle that energy, because that's exactly what's coming your way in 12 days." },
+    affirmation: "Working in a toxic environment makes you question your own competence, your own judgment, your own worth. Let this be the moment you stop doing that. Your track record speaks louder than any bad workplace culture ever could. You are genuinely exceptional at what you do.",
+    legend: { name: "Grandma Moses", former: "Farm worker and embroiderer all her life", became: "Celebrated American folk artist", story: "Anna Mary Robertson Moses didn't start painting seriously until she was 78 years old — after arthritis made embroidery too painful. Her paintings were discovered in a drugstore window by an art collector. She went on to have solo exhibitions in major galleries and was still painting past her 100th birthday." },
+    rockclock: "A toxic mine produces poisonous output. Lucky for everyone involved, you were always the ventilation system keeping things breathable."
+  },
+  "2026-4-27": {
+    oneliner: "11 days — you're in single-digit territory if you skip weekends, and you absolutely should skip weekends.",
+    song: { title: "Running Up That Hill", artist: "Kate Bush", reason: "You've been running up that hill for years — the view from the top is something else, and you're almost there. Kate Bush is an icon and you deserve icon energy right now." },
+    affirmation: "Eleven days from now you will have done something most people talk about but never actually do: chosen yourself. Over comfort, over familiarity, over the devil you know. That decision — already made, already locked in — is one of the most self-respecting things a person can do. The hard part is already behind you.",
+    legend: { name: "Christoph Waltz", former: "Obscure Austrian TV actor for 25 years", became: "Two-time Oscar-winning Hollywood star", story: "Christoph Waltz spent 25 years in relatively obscure Austrian television, widely considered someone who'd never broken through. At 52 years old, Quentin Tarantino cast him in Inglourious Basterds. He won the Academy Award. Then won it again for Django Unchained. He didn't become one of Hollywood's most recognisable actors until an age when most careers are fading." },
+    rockclock: "Some of the most valuable ore bodies are found only after years of patient drilling. Your patience is about to pay a spectacular dividend."
+  },
+  "2026-4-28": {
+    oneliner: "10 days — double digits was the bunker. Single digits is the runway. You are cleared for takeoff.",
+    song: { title: "I Will Survive", artist: "Gloria Gaynor", reason: "You didn't just survive — you thrived technically, professionally, and personally despite everything. This one's about the surviving, and that deserves a full kitchen dance." },
+    affirmation: "Think about what you've actually accomplished in that mine despite the environment, not because of it. The ore bodies you found, the teams you kept functional, the problems you solved that no one above you even knew existed. That's all yours. No toxic workplace gets to claim credit for what your brain and grit produced. You take all of it with you.",
+    legend: { name: "Robin Chase", former: "Stay-at-home mum with MBA and no prospects at 42", became: "Co-founder of Zipcar, transport visionary", story: "Robin Chase co-founded Zipcar at age 42 with almost no startup experience, after years away from the workforce. She was told repeatedly the idea wouldn't work. Zipcar transformed urban transport globally and was acquired for $491 million. Her entire career as a tech entrepreneur started past 40." },
+    rockclock: "10 days. In mining terms, you've hit the final heading. The ore body of your next chapter is rich, wide, and entirely untouched."
+  },
+  "2026-4-29": {
+    oneliner: "9 days left — even cat lives come in nines, and yours is just beginning its best one.",
+    song: { title: "Here Comes the Sun", artist: "The Beatles", reason: "George Harrison wrote this after a long dark winter — literally walking out of an oppressive business situation into someone's garden and feeling the sun for the first time in months. He could have been writing it about you, right now." },
+    affirmation: "Nine days is nothing. Nine days is a camping trip. Nine days is a good read and a few good sleeps and suddenly you're standing on the other side of the biggest professional decision you've made in years. You've been so focused on getting through it that you might not have let yourself fully imagine what comes after. Start imagining. It's going to be good.",
+    legend: { name: "Samuel L. Jackson", former: "Struggling actor in recovery from addiction at 40", became: "Highest-grossing film actor in Hollywood history", story: "Samuel L. Jackson didn't get his breakthrough role until he was 43, after years battling addiction and working in tiny supporting roles. After getting sober, Pulp Fiction happened, then Jackie Brown, then the entire Marvel universe. His best work came entirely after most actors have already peaked." },
+    rockclock: "A geologist's favourite day is ore-some Friday. In 9 days, every single day will be ore-some."
+  },
+  "2026-4-30": {
+    oneliner: "8 days — last day of April. May is literally named after growth and renewal. The universe is not being subtle.",
+    song: { title: "Good as Hell", artist: "Lizzo", reason: "Because in 8 days you're going to feel exactly this. Lizzo demands you do your hair toss, check your nails, and walk into May like you own it." },
+    affirmation: "April is done after today. The month you started this countdown in is over. Every day that passes is a day you never have to go back to — and that is worth something. Eight more and the whole thing is behind you. You are not just leaving a job. You are reclaiming your nervous system, your weekends, and your sense of possibility.",
+    legend: { name: "Viola Davis", former: "Unknown stage actress, struggling financially into her 40s", became: "EGOT winner, most awarded Black actress in history", story: "Viola Davis spent her 30s and early 40s as a respected but largely unknown stage actress. Her film breakthrough came at 43, and her stratospheric rise — Emmys, Tony, Oscar, Grammy — happened almost entirely in her late 40s and 50s. She is living proof that the biggest recognition can come exactly when the industry thinks it shouldn't." },
+    rockclock: "April: the month you started tunnelling toward freedom. May: the month you blast through the final face and walk into daylight."
+  },
+  "2026-5-1": {
+    oneliner: "7 days — one week. Seven sunrises between you and the greatest Friday of your professional life.",
+    song: { title: "Freedom '90", artist: "George Michael", reason: "George Michael wrote this about breaking free from a contract that was suffocating him creatively and professionally. He literally burnt his old image in the video. If that's not a metaphor, nothing is." },
+    affirmation: "One week. Seven sleeps. You are in the final stretch and you should let yourself feel every bit of the excitement that comes with that. The anticipation of freedom is itself a kind of joy — and you've earned the right to feel it fully, openly, and without guilt. Something genuinely wonderful is one week away.",
+    legend: { name: "Kathryn Joosten", former: "Psychiatric nurse and stay-at-home mum until 56", became: "Two-time Emmy-winning actress", story: "Kathryn Joosten didn't begin her acting career until she was 56 years old. She moved to Hollywood with no connections and started completely from scratch, winning two Emmy Awards for Desperate Housewives. She began her entire career at an age most people consider retirement." },
+    rockclock: "Seven days left. In stratigraphy, you're through the overburden, past the waste rock, and staring directly at the high-grade ore zone of the rest of your life."
+  },
+  "2026-5-2": {
+    oneliner: "6 days — fewer days left than strings on a guitar. Time to start composing your next movement.",
+    song: { title: "Eye of the Tiger", artist: "Survivor", reason: "You've done the training, you've done the rounds, you've taken the hits and kept standing. This week is just the victory lap. Play it loud." },
+    affirmation: "Six days from now someone will ask what you do for a living and your answer will be different. Maybe you'll still be figuring it out — and that's completely fine. The point is the question will feel like an open door instead of a closing one. You are six days from a fundamentally different answer, and all the possibility that comes with it.",
+    legend: { name: "Ang Lee", former: "Unemployed stay-at-home husband writing unproduced scripts", became: "Two-time Oscar-winning director", story: "Ang Lee spent six years unemployed after film school, supported by his wife, writing screenplays that went nowhere. He was 36 before he directed his first film. His wife had given him one more year. That window produced a career that earned him Oscars for Brokeback Mountain and Life of Pi. The fallow years weren't wasted — they were the long geological process before the eruption." },
+    rockclock: "6 days. The seismic readings are off the charts — but for the first time ever, the tremors are entirely good ones."
+  },
+  "2026-5-3": {
+    oneliner: "5 days — you're in the hand now. Five fingers pointing straight toward Friday.",
+    song: { title: "Walking on Sunshine", artist: "Katrina and the Waves", reason: "Genuinely one of the most joyful songs ever recorded and you are about to have a week of walking on sunshine. Put it on while getting ready Monday morning. You're welcome." },
+    affirmation: "Five days is close enough that you should start doing the little things — collecting anything that's yours, making sure you leave nothing behind worth going back for. Leaving well is its own form of dignity. You're allowed to be proud and relieved at the same time. Both are completely true.",
+    legend: { name: "Momofuku Ando", former: "Failed businessman, bankrupt at 48", became: "Inventor of instant noodles, fed billions", story: "Momofuku Ando went bankrupt at 48 and decided to solve a problem he'd observed — people queuing for ramen in post-war Japan. Working alone in a shed in his backyard, he invented instant noodles at 48 and Cup Noodles at 61. His invention is credited with feeding more people in the 20th century than almost any other food product. From a shed. Past middle age. Starting from zero." },
+    rockclock: "5 days. In underground mining terms, you've reached the collar of the decline. From here it's all uphill."
+  },
+  "2026-5-4": {
+    oneliner: "4 days — May the 4th be with you. And it absolutely, unequivocally is.",
+    song: { title: "Don't You (Forget About Me)", artist: "Simple Minds", reason: "They won't forget about you — but more importantly, never forget what you're capable of. This one's less about leaving and more about remembering exactly who walks out that door on Friday." },
+    affirmation: "Four days. You're in the same week now. The same seven-day block of time that contains May 8th also contains today. Let that sink in. This is the week. The one you've been looking forward to. Everything you've been feeling — the anticipation, the relief, the butterflies — that's all completely appropriate. You're right on time.",
+    legend: { name: "Haruki Murakami", former: "Jazz bar owner in Tokyo until age 29", became: "One of the most celebrated novelists alive", story: "Haruki Murakami was running a jazz bar when he had a sudden inexplicable sense at 29 that he could write a novel. He wrote his first book at the kitchen table after the bar closed each night. He is now translated into 50 languages, has sold tens of millions of books, and is a perennial Nobel Prize contender — all from a decision made on a whim at a baseball game." },
+    rockclock: "4 days. The ore shoot is fully exposed, the grade is spectacular, and all that's left is the extraction. And brother, you are about to be extracted."
+  },
+  "2026-5-5": {
+    oneliner: "3 days — Cinco de Mayo. You have every reason to celebrate. You are THIS close to your own liberation.",
+    song: { title: "Shake It Off", artist: "Taylor Swift", reason: "Three days left and the only appropriate response is to shake off every bad shift, every toxic meeting, every moment they made you feel less than what you are. Shake. It. All. Off." },
+    affirmation: "Three days. Thursday you'll have two. Wednesday night you'll think 'tomorrow is my second to last day' and it will feel surreal. Let it be surreal. You've earned this feeling — this particular flavour of relief mixed with excitement and maybe a little disbelief. It's real. It's happening. You did this.",
+    legend: { name: "Charles Darwin", former: "Failed medical student, aimless and directionless at 22", became: "Author of the theory of evolution, changed science forever", story: "Charles Darwin was considered a disappointment by his father, failed at medical school, and was sent on the Beagle voyage essentially as a gentleman's companion. He spent decades quietly working from home, largely dismissed by the establishment. On the Origin of Species wasn't published until he was 50. He spent decades being underestimated. The work outlasted every single critic." },
+    rockclock: "Three days. The blasting is done, the muck has been cleared, and what's left gleaming on the floor is pure, unprocessed you."
+  },
+  "2026-5-6": {
+    oneliner: "2 days — tomorrow is your last full day. The second-to-last work night sleep. Have a good one.",
+    song: { title: "Finally", artist: "CeCe Peniston", reason: "FINALLY. It has happened to you. Right in front of your face and you just cannot get away from it. This is the only acceptable soundtrack for the next 48 hours." },
+    affirmation: "Two days. The courage it takes to leave something that isn't working — especially after years invested, especially in an industry as specific as mining — is something most people never find. You found it. You acted on it. Whatever comes next, you will face it with the same backbone that got you to this moment. That doesn't switch off at the exit gate.",
+    legend: { name: "Vera Wang", former: "Told at 40 that it was too late to start over", became: "Billionaire designer worn by every major celebrity", story: "We revisit Vera Wang on your second-to-last night because of what she said when asked about starting late: her only regret was worrying so long about it. The world she built — worth over a billion dollars, worn at every major red carpet — all came from ignoring the voice that said it was too late. Tomorrow you start ignoring that voice permanently." },
+    rockclock: "Two days. In geological time, this is less than a nanosecond. In your personal time, it is absolutely everything."
+  },
+  "2026-5-7": {
+    oneliner: "1 day — tomorrow. TOMORROW. The last shift. The final blast. The walk to the portal. One more sleep.",
+    song: { title: "Beautiful Day", artist: "U2", reason: "Bono wrote this about gratitude for things you almost missed because you were looking somewhere else. Tomorrow is going to be a beautiful day. So is Saturday. So is every single day after that." },
+    affirmation: "One more sleep. Tonight you go to bed an employee of that mine, and tomorrow evening you will never be that again. That is a profound thing. Honour how far you've come to reach this night. The version of you that started that job had no idea what they'd endure — and absolutely no idea how strong they'd prove to be. Sleep well. Tomorrow you walk out.",
+    legend: { name: "Vera Wang — one final time", former: "Told by the world it was too late", became: "Proof that it is never, ever too late", story: "On your last night we come back to her one more time: when asked if she regrets starting at 40, she said her only regret was worrying so long about starting late. Stop counting the years you spent somewhere that wasn't right for you. Start counting the years ahead. She had more than 40 of them, and she spent every one building something extraordinary. So will you." },
+    rockclock: "Last night. In seismic terms, tomorrow registers a 10.0 on the personal Richter scale — the ground-shaking, life-changing, freedom-bringing kind."
+  },
+  "2026-5-8": {
+    oneliner: "TODAY IS THE DAY. Put your boots on one last time, walk out those gates, and don't look back. You absolute legend.",
+    song: { title: "Free Fallin'", artist: "Tom Petty", reason: "Tom Petty said this song was about pure liberation — no strings, no obligations, just open air. That is your entire day today. Free. Fallin'. Into the best chapter of your life." },
+    affirmation: "Today is May 8th. Today is the day. Whatever you feel right now — excited, emotional, relieved, terrified, triumphant, or all of them at once — every single one of those feelings is earned, valid, and real. You did something hard. You stayed when leaving felt impossible, and you left when staying did. Walk out today with your head as high as every ridge line you've ever stood on. The view from here is extraordinary.",
+    legend: { name: "You", former: "Geology Superintendent, gold mine, too long", became: "Whoever the hell you decide to be next", story: "On May 8th, 2026, a geology superintendent with years of hard-won expertise, unshakeable technical knowledge, and a resilience most people couldn't fathom, walked out of a gold mine for the last time. The next chapter hadn't been written yet. That was entirely the point. To be continued — brilliantly." },
+    rockclock: "Today the mine loses its best asset. Today you reclaim yours. Go. Get out of there. We'll see you on the surface. 💎"
+  }
+};
+
+const TARGET = new Date('2026-05-08T17:00:00');
+const START  = new Date('2026-04-22T00:00:00');
+const COLORS = ['#FFD700','#FF6B9D','#00F5FF','#BF5FFF','#39FF14','#FF6B6B','#FFEAA7','#98FB98'];
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.warn);
+
+// Neon orbs
+[{c:'#BF5FFF',s:500,t:'2%',l:'-8%',d:'5s'},{c:'#00F5FF',s:420,t:'18%',l:'68%',d:'7s'},{c:'#FF6B9D',s:360,t:'52%',l:'4%',d:'4s'},{c:'#FFD700',s:300,t:'68%',l:'62%',d:'6.5s'},{c:'#39FF14',s:260,t:'33%',l:'38%',d:'8s'}].forEach(o=>{
+  const d=document.createElement('div'); d.className='neon-orb';
+  d.style.cssText=`width:${o.s}px;height:${o.s}px;background:${o.c};top:${o.t};left:${o.l};--dur:${o.d}`;
+  document.getElementById('neonBg').appendChild(d);
+});
+
+// Confetti
+for(let i=0;i<70;i++){
+  const p=document.createElement('div'); p.className='piece';
+  const sz=6+Math.random()*10,circle=Math.random()>.5;
+  p.style.cssText=`left:${Math.random()*100}%;width:${circle?sz:sz*.6}px;height:${sz}px;background:${COLORS[~~(Math.random()*COLORS.length)]};border-radius:${circle?'50%':'2px'};animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*7}s`;
+  document.getElementById('confetti').appendChild(p);
+}
+
+// Countdown
+function timeLeft(){const d=TARGET-new Date();if(d<=0)return null;return{days:~~(d/864e5),hours:~~(d%864e5/36e5),minutes:~~(d%36e5/6e4),seconds:~~(d%6e4/1e3)};}
+function pad(n){return String(n).padStart(2,'0');}
+function tick(){
+  const t=timeLeft();
+  if(!t){document.getElementById('countdownSection').style.display='none';document.getElementById('freedomScreen').style.display='block';return;}
+  document.getElementById('countdownRow').innerHTML=['days','hours','minutes','seconds'].map((l,i)=>`<div class="time-box" style="animation-delay:${i*.5}s"><span class="time-val">${pad(t[l])}</span><span class="time-lbl">${l}</span></div>`).join('');
+  const pct=Math.min(100,Math.max(0,(new Date()-START)/(TARGET-START)*100));
+  document.getElementById('progressWrap').innerHTML=`<div class="prog-labels"><span>Sentence served</span><span class="pct">${pct.toFixed(1)}% escaped 🚀</span><span>🏁 Freedom</span></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>`;
+}
+tick(); setInterval(tick,1000);
+
+// Install
+let deferred=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;document.getElementById('installBar').style.display='block';});
+window.addEventListener('appinstalled',()=>{document.getElementById('btnInstall').textContent='✅ Installed!';document.getElementById('btnInstall').disabled=true;});
+setTimeout(()=>{document.getElementById('installBar').style.display='block';},1500);
+document.getElementById('btnInstall').addEventListener('click',async()=>{
+  if(!deferred){alert('On iPhone: tap the Share button ⬆️ then "Add to Home Screen" 📲\nOn Android: tap ⋮ menu then "Add to Home Screen"');return;}
+  deferred.prompt();const{outcome}=await deferred.userChoice;
+  if(outcome==='accepted'){document.getElementById('btnInstall').textContent='✅ Installed!';document.getElementById('btnInstall').disabled=true;}
+  deferred=null;
+});
+
+// Notifications
+function scheduleNext(){
+  const t=timeLeft();if(!t)return;
+  const tm=new Date();tm.setDate(tm.getDate()+1);tm.setHours(9,0,0,0);
+  setTimeout(()=>{
+    if(Notification.permission==='granted'){
+      const msgs=[`${t.days} days to go! Keep your eyes on the exit shaft! ⛏️`,`Just ${t.days} more sleeps! Freedom is RIGHT there! 💎`,`${t.days} days left in the mine. Almost blasted through! 🎉`,`T-minus ${t.days} days! Start warming up that victory dance! 🕺`];
+      new Notification('⛏️ Freedom Countdown!',{body:msgs[~~(Math.random()*msgs.length)],icon:'icon-192.png',tag:'freedom-daily',renotify:true});
+      scheduleNext();
+    }
+  },tm-new Date());
+}
+const btnNotif=document.getElementById('btnNotif'),notifStatus=document.getElementById('notifStatus');
+btnNotif.addEventListener('click',async()=>{
+  if(!('Notification' in window)){notifStatus.textContent="Browser doesn't support notifications.";notifStatus.className='notif-status err';return;}
+  const perm=await Notification.requestPermission();
+  if(perm==='granted'){
+    notifStatus.textContent='✅ Daily reminders set for 9am!';notifStatus.className='notif-status ok';
+    btnNotif.textContent='🔔 Reminders On!';btnNotif.disabled=true;
+    localStorage.setItem('notifsOn','1');scheduleNext();
+    setTimeout(()=>{const t=timeLeft();new Notification('⛏️ Freedom Countdown activated!',{body:`${t?.days??0} days to go — see you on the other side! 🎊`,icon:'icon-192.png',tag:'freedom-test'});},3000);
+  }else{notifStatus.textContent='Notifications blocked. Enable in browser settings.';notifStatus.className='notif-status err';}
+});
+if(localStorage.getItem('notifsOn')==='1'&&Notification.permission==='granted'){
+  btnNotif.textContent='🔔 Reminders On!';btnNotif.disabled=true;
+  notifStatus.textContent='✅ Daily reminders active at 9am';notifStatus.className='notif-status ok';
+  scheduleNext();
+}
+
+// Cards
+function getTodayContent(){const d=new Date();return DAILY_CONTENT[`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`]||null;}
+function renderCards(data){
+  const defs=[
+    {key:'oneliner',emoji:'💬',title:"Today's One-Liner",color:'#FFD700'},
+    {key:'song',emoji:'🎵',title:'Song of the Day',color:'#00F5FF'},
+    {key:'affirmation',emoji:'✨',title:'Words of Affirmation',color:'#DDA0DD'},
+    {key:'legend',emoji:'🚀',title:'Late Bloomers & Legends',color:'#FF6B9D'},
+    {key:'rockclock',emoji:'🪨',title:'Rock Bottom? Not Anymore.',color:'#96CEB4'},
+  ];
+  document.getElementById('cardsEl').innerHTML=defs.map((def,i)=>{
+    let body='';
+    if(def.key==='song'&&data.song){body=`<span class="song-title">${data.song.title}</span><span class="song-artist">${data.song.artist}</span><span class="song-reason">${data.song.reason}</span>`;}
+    else if(def.key==='legend'&&data.legend){body=`<em class="legend-career">${data.legend.former} → ${data.legend.became}</em><strong class="legend-name">${data.legend.name}</strong><span class="legend-story">${data.legend.story}</span>`;}
+    else{body=data[def.key]||'';}
+    return `<div class="card" style="--c:${def.color};animation-delay:${i*.3}s"><div class="card-icon">${def.emoji}</div><div class="card-title">${def.title}</div><div class="card-body">${body}</div></div>`;
+  }).join('');
+  document.getElementById('cardsEl').style.display='flex';
+}
+const content=getTodayContent();
+if(content){renderCards(content);}
+else if(!timeLeft()){/* freedom screen handles it */}
+else{document.getElementById('cardsEl').innerHTML='<div class="err-box"><p>No content for today — but freedom is still coming! 💎</p></div>';document.getElementById('cardsEl').style.display='flex';}
+</script>
+</body>
+</html>
